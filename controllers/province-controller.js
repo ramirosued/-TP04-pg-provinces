@@ -1,7 +1,10 @@
 import validacionesHelper from '../helpers/validaciones-Helper.js';
-import provinces from '../index.js';
+import provinces from '../entities/province.js';
 import { Router } from "express";
+import ProvinceService from '../services/province-service.js';
 let router =Router()
+
+
 router.get("/api/provinces",(req,res) =>{
     const id = parseInt(req.query.id); 
     const provinceEncontrada = provinces.find(province => province.id === id);

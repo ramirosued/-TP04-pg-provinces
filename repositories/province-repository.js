@@ -1,6 +1,6 @@
 import pkg from 'pg'
-import provinces from '../entities/province';
-import provinces from '..index';
+import provinces from '../entities/province.js';
+
 const { Client, Pool } = pkg;
 export default class ProvinceRepository {
  getAllAsync = async () => {
