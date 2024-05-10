@@ -9,12 +9,10 @@ export default class ProvinceRepository {
  return returnArray;
  }
  getByIdAsync = async (id) => {
-
     let provinceEncontrada = provinces.find(province => province.id === id);
-    
     return provinceEncontrada;
-
  }
+
  createAsync = async (nombre, full_name, latitude, longitude, display_order) => {
     if (!nombre || !full_name || !latitude || !longitude || !display_order || nombre.length<3 || full_name.length<3) {
     } else {
@@ -26,11 +24,14 @@ export default class ProvinceRepository {
             longitude: longitude,
             display_order: display_order
         };
+        provinces.push(nuevaProvincia);
         return nuevaProvincia;
     }
-return nuevaProvincia;
+    return nuevaProvincia;
  }
- updateAsync = async (name,full_name, latitude, longitude, display_order) => {
+
+ updateAsync = async (id, name,full_name, latitude, longitude, display_order) => {
+    let devolucion = 0
     if (provinces.find(province => province.id === id) != undefined)
     {
         if(name !== undefined && full_name !== undefined && latitude !== undefined && longitude !== undefined && display_order !==undefined)
@@ -47,24 +48,36 @@ return nuevaProvincia;
                     longitude: longitude,
                     display_order: display_order
                 };
-               return "Provincia actualizada exitosamente";
+                devolucion = 1
+               return 1 ;
             } else  
             {
-                return "bad request";
+                devolucion = 2;
+                return devolucion;
             }    
         }else 
         {
-            return "bad request";
+            devolucion = 2;
+            return devolucion;
         }  
     }
     else
     {
-        return "no existe";
+        devolucion = 3;
+        return devolucion;
     }
  }
 
  deleteByIdAsync = async (id) => {
-    let idProvincia = porvinces.find(province => province.id === id)
-    return idProvincia;
+    let sePudo= 0;
+    let idProvincia = provinces.findIndex(province => province.id === id);
+    if (idProvincia!=undefined) { 
+        provinces.splice(idProvincia,1);
+        sePudo = 1;
+        return sePudo;
+    } else {
+        sePudo = 0
+       return sePudo;
+    }  
  }
 }

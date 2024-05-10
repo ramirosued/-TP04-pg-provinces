@@ -27,7 +27,7 @@ router.post("/api/provinceP", async(req, res) => {
 
 });
 
-router.put("/api/provincePU", (req, res) => {
+router.put("/api/provincePU", async(req, res) => {
     const id = req.body.id;
 
     let name = req.body.name;
@@ -35,51 +35,15 @@ router.put("/api/provincePU", (req, res) => {
     let latitude = req.body.latitude;
     let longitude = req.body.longitude;
     let display_order = req.body.display_order;
-   
-    if (provinces.find(province => province.id === id) != undefined)
-    {
-        if(name !== undefined && full_name !== undefined && latitude !== undefined && longitude !== undefined && display_order !==undefined)
-        {
-            if(name.length>3 && full_name.length > 3)
-            {
-                const index = provinces.findIndex(province => province.id === id);
-                provinces[index] = 
-                {
-                    id: id,
-                    name: name,
-                    full_name: full_name,
-                    latitude: latitude,
-                    longitude: longitude,
-                    display_order: display_order
-                };
-                res.status(201).send("Provincia actualizada exitosamente");
-            } else  
-            {
-                res.status(400).send("bad request")
-            }    
-        }else 
-        {
-            res.status(400).send("bad request")
-        }  
-    }
-    else
-    {
-        res.status(404).send("no existe")
-    }
+    const resArray = await svc.updateAsync(id, name, full_name, latitude, longitude, display_order);
 
-
+    res.status(resArray[1]).send(resArray[0]); 
 });
 
-router.delete("/api/provinceD", (req, res) => {
+router.delete("/api/provinceD", async(req, res) => {
     const id = validacionesHelper.getIntegerOrDefault(req.query.id);
-    let idProvincia;
-    idProvincia = porvinces.find(province => province.id === id);
-    if (idProvincia!=undefined) { 
-        provinces.splice(idProvincia);
-        res.status(200).send("Se elimino correctamente");
-    } else {
-        res.status(404).json({ message: 'Provincia no encontrada' });
-    }
+    const resArray = await svc.deleteByIdAsync(id);
+    res.status(resArray[1]).send(resArray[0]);
 });
 
 export default router;
