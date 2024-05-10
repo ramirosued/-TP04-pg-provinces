@@ -2,41 +2,29 @@ import validacionesHelper from '../helpers/validaciones-Helper.js';
 import provinces from '../entities/province.js';
 import { Router } from "express";
 import ProvinceService from '../services/province-service.js';
-let router =Router()
-
-
-router.get("/api/provinces",(req,res) =>{
-    const id = parseInt(req.query.id); 
-    const provinceEncontrada = provinces.find(province => province.id === id);
-    if(provinceEncontrada){
-        res.status(200).send(`OK. Provincia encontrada: ${JSON.stringify(provinceEncontrada)}`);
-    }
-    else{
-        res.status(404).send("No se encontró ninguna provincia con el ID proporcionado");
-    }    
+let router =Router();
+const  svc = new ProvinceService();
+router.get("/api/province", async(req,res)=>{
+   const resArray = await svc.getAllAsync();
+   res.status(resArray[1]).send(resArray[0]);
 })
 
-router.post("/api/provinceP", (req, res) => {
+router.get("/api/provinces",async(req,res) =>{
+    const id = parseInt(req.query.id); 
+    const resArray = await svc.getByIdAsync(id)
+    res.status(resArray[1]).send(resArray[0]); 
+})
+
+router.post("/api/provinceP", async(req, res) => {
     let nombre = validacionesHelper.getStringOrDefault(req.body.name);
     let full_name = validacionesHelper.getStringOrDefault(req.body.full_name);
     let latitude = validacionesHelper.getIntegerOrDefault(req.body.latitude);
     let longitude = validacionesHelper.getIntegerOrDefault(req.body.longitude);
     let display_order = validacionesHelper.getIntegerOrDefault(req.body.display_order);
 
-    if (!nombre || !full_name || !latitude || !longitude || !display_order || nombre.length<3 || full_name.length<3) {
-        res.status(404).send(`Faltan datos de la provincia o esta mal escrito`);
-    } else {
-        let nuevaProvincia = {
-            id: provinces.length + 1,
-            name: nombre,
-            full_name: full_name,
-            latitude: latitude,
-            longitude: longitude,
-            display_order: display_order
-        };
-        provinces.push(nuevaProvincia);
-        res.status(200).json({ message: 'Operación exitosa'});
-    }
+    const resArray = await svc.createAsync(nombre, full_name, latitude, longitude, display_order)
+    res.status(resArray[1]).send(resArray[0]); 
+
 });
 
 router.put("/api/provincePU", (req, res) => {

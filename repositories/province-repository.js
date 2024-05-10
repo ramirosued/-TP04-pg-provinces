@@ -10,12 +10,13 @@ export default class ProvinceRepository {
  }
  getByIdAsync = async (id) => {
 
-    const provinceEncontrada = provinces.find(province => province.id === id);
+    let provinceEncontrada = provinces.find(province => province.id === id);
+    
     return provinceEncontrada;
+
  }
  createAsync = async (nombre, full_name, latitude, longitude, display_order) => {
     if (!nombre || !full_name || !latitude || !longitude || !display_order || nombre.length<3 || full_name.length<3) {
-        return false;
     } else {
         let nuevaProvincia = {
             id: provinces.length + 1,
